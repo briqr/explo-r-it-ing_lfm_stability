@@ -1,0 +1,132 @@
+seed: 42
+#seed: 928
+
+dataset: jxie/celeba-hq
+
+train_batch_size: 16
+
+
+accelerate:
+  mixed_precision: bf16
+
+ema:
+  beta: 0.999
+  
+
+
+model:
+  name: vq_gan_taming
+  latent_channels: 4
+  # channel_multipliers: [ 1,2,4,8]
+  channel_multipliers: [ 1,2,4,4]
+  hidden_channels: 128
+  num_residual_blocks: 2
+  dropout_probability: 0.0
+  use_attention: False # this is not perfectly match with the original paper!
+  quantizer_aux_loss_weight: 1.0
+  quantizer_config:
+    quantize_type: vq
+    embed_dim: 4
+    num_embed: 8192
+    commitment_loss_weight: 0.25
+   
+discriminator:
+  name: n_layer_discriminator
+  input_channels: 3
+  num_filters: 64
+  num_layers: 3
+  lambda_adversarial_loss : 0.5
+  lambda_disc_loss: 0.5
+  lambda_perceptual_loss: 1.0
+  adaptive_weight_max: 1e4
+  
+logger:
+  dataset_name: ${dataset} # this is used to apply the correct normalization to the images
+  checkpoint_every_step: 1500
+  wandb:
+    project: any_diffusion
+    mode: offline
+
+  image_logger:
+    img_log_iter_frequency: 1
+    max_images_to_log: 8
+    save_on_local: true
+    save_on_wandb: true
+    rescale_mean: [0.5, 0.5, 0.5]
+    rescale_std: [0.5, 0.5, 0.5]
+  
+train:
+  num_train_steps : 100
+  grad_accum_every: 1
+  apply_gradient_penalty_every: 1
+  max_grad_norm: 2
+  discr_start_after_step: 5000
+  train_batch_size: ${train_batch_size}
+
+evaluation:
+  eval_every_step: 10000
+  eval_for_steps: -1
+  dataset_name: ${dataset}
+  metrics:
+    - ssim
+    - mse
+    - psnr
+
+optim:
+  base_lr: 1e-4
+  lr_scale: fixed
+  wd: 0
+  betas: [0.9, 0.999]
+  eps: 1e-8
+  
+disc_optim:
+  base_lr: 1e-4
+  lr_scale: fixed
+  wd: 0
+  betas: [0.9, 0.999]
+  eps: 1e-8
+  
+  
+lr_scheduler:
+  name: constant
+
+disc_lr_scheduler:
+  name: constant
+
+
+train_data:
+  dataset:
+    path: ${dataset}
+    cache_dir: /p/project1/generativeaims/briq/datasets/
+    split: train
+  transforms:
+    # before normlization, the images should be in range of [0, 1]
+    no_aug: True # Do not use any Timm's augmentations for INET training
+    is_training: True
+    input_size: 256
+    mean: [0.5, 0.5, 0.5]
+    std: [0.5, 0.5, 0.5]
+    hflip: 1.0
+  dataloader:
+    persistent_workers: true
+    batch_size: ${train_batch_size}
+    num_workers: 20
+    shuffle: True
+
+eval_data: 
+  dataset:
+    path: ${dataset}
+    cache_dir: /p/project1/generativeaims/briq/datasets/  
+    split: validation
+  transforms:
+    no_aug: True # Do not use any Timm's augmentations for INET training
+    is_training: False
+    input_size: 256
+    mean: [0.5, 0.5, 0.5]
+    std: [0.5, 0.5, 0.5]
+    hflip: 1.0
+  dataloader:
+    persistent_workers: true
+    batch_size: ${train_batch_size} 
+    num_workers: 20
+    shuffle: True

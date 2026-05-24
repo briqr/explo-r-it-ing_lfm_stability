@@ -1,0 +1,131 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+venv/
+.env/
+.venv/
+env/
+jupiter_env/
+gen_env/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE/editor
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+wandb/
+tensorboard/
+runs/
+
+# Slurm / cluster outputs
+slurm-*.out
+*.out
+*.err
+*.job
+*.pid
+
+# Experiment outputs
+results/
+results*/
+checkpoints/
+checkpoint*/
+outputs/
+samples/
+vis/
+train_images/
+attribute_histograms*/
+attr_*/
+ddp_outputs/
+
+# Model/data artifacts
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.onnx
+*.npz
+*.npy
+*.pkl
+*.pickle
+*.jsonl
+
+# Large feature/cache files
+clip_features/
+*_features/
+features/
+clusters/
+cluster_*.pth
+selected_index.pth
+
+# Datasets / generated data
+data/
+datasets/
+*.tar
+*.tar.gz
+*.zip
+*.7z
+
+# Hugging Face / cache
+.cache/
+huggingface/
+hf_cache/
+*.lock
+
+# Secrets / tokens
+.env
+*.env
+*token*
+*TOKEN*
+hf_token*
+secrets.json
+credentials.json
+
+# Generated media
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+*.mp4
+*.avi
+*.mov
+
+# LaTeX / paper build files
+*.aux
+*.bbl
+*.blg
+*.brf
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.run.xml
+*.bcf
+
+data
+results
+commands.txt
+imagenet_models
+celebhq_models
